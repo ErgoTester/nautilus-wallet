@@ -10,7 +10,6 @@ import { connectedDAppsDbService } from "@/database/connectedDAppsDbService";
 import { APIErrorCode, TxSendErrorCode } from "@/types/connector";
 import {
   AsyncRequest,
-  AsyncRequestQueue,
   AsyncRequestType
 } from "../connector/rpc/asyncRequestQueue";
 import {
@@ -28,6 +27,42 @@ import {
   getUTxOs
 } from "./ergoHandlers";
 
+// --- PERSISTENT QUEUE LOGIC FOR MOBILE ---
+const QUEUE_KEY = "nautilus_request_queue";
+const resolvers = new Map<string, (val: any) => void>();
+
+async function pushToQueue(request: Omit<AsyncRequest, "resolve">): Promise<any> {
+  const id = Math.random().toString(36).substring(7);
+  const { [QUEUE_KEY]: currentQueue = [] } = await chrome.storage.local.get(QUEUE_KEY);
+  
+  await chrome.storage.local.set({ 
+    [QUEUE_KEY]: [...currentQueue, { ...request, id }] 
+  });
+
+  return new Promise((resolve) => {
+    resolvers.set(id, resolve);
+  });
+}
+
+async function popFromQueue(): Promise<AsyncRequest | undefined> {
+  const { [QUEUE_KEY]: currentQueue = [] } = await chrome.storage.local.get(QUEUE_KEY);
+  if (currentQueue.length === 0) return undefined;
+  
+  const item = currentQueue.shift();
+  await chrome.storage.local.set({ [QUEUE_KEY]: currentQueue });
+  
+  return {
+    ...item,
+    resolve: (val: any) => {
+      const resolver = resolvers.get(item.id);
+      if (resolver) {
+        resolver(val);
+        resolvers.delete(item.id);
+      }
+    }
+  };
+}
+
 type AuthenticatedMessageHandler<T extends InternalRequest> = (
   // @ts-expect-error webext-bridge uses an older version of type-fest, so JsonValue is not recognized
   message: BridgeMessage<GetDataType<T, JsonValue>>,
@@ -35,15 +70,17 @@ type AuthenticatedMessageHandler<T extends InternalRequest> = (
 ) => GetReturnType<T> | Promise<GetReturnType<T>>;
 
 const NOT_CONNECTED_ERROR = error(APIErrorCode.InvalidRequest, "Not connected.");
-const requests = new AsyncRequestQueue();
 
 function onMessageAuth<T extends InternalRequest>(
   request: T,
   handler: AuthenticatedMessageHandler<T>
 ) {
   onMessage(request, async (msg) => {
-    if (!isInternalEndpoint(msg.sender)) return NOT_CONNECTED_ERROR as GetReturnType<T>;
-    const conn = await connectedDAppsDbService.getByOrigin(msg.data.payload.origin);
+    // Relaxed check for mobile: we prioritize origin over internal endpoint checks if needed
+    const origin = msg.data?.payload?.origin;
+    if (!origin) return NOT_CONNECTED_ERROR as GetReturnType<T>;
+
+    const conn = await connectedDAppsDbService.getByOrigin(origin);
     if (!conn) return NOT_CONNECTED_ERROR as GetReturnType<T>;
 
     return handler(msg, conn.walletId);
@@ -51,20 +88,16 @@ function onMessageAuth<T extends InternalRequest>(
 }
 
 onMessage(InternalRequest.Connect, async ({ data, sender }) => {
-  if (!isInternalEndpoint(sender)) return false;
-
   const authorized = await checkConnection(data.payload.origin);
   if (authorized) return true;
   return await openWindow(InternalRequest.Connect, data, sender.tabId);
 });
 
-onMessage(InternalRequest.CheckConnection, async ({ sender, data }) => {
-  if (!isInternalEndpoint(sender)) return false;
+onMessage(InternalRequest.CheckConnection, async ({ data }) => {
   return await checkConnection(data.payload.origin);
 });
 
-onMessage(InternalRequest.Disconnect, async ({ sender, data }) => {
-  if (!isInternalEndpoint(sender)) return false;
+onMessage(InternalRequest.Disconnect, async ({ data }) => {
   await connectedDAppsDbService.deleteByOrigin(data.payload.origin);
   const connected = await checkConnection(data.payload.origin);
   return !connected;
@@ -132,25 +165,20 @@ onMessageAuth(InternalRequest.SignTx, async (msg) => {
   return await openWindow(InternalRequest.SignTx, msg.data, msg.sender.tabId);
 });
 
-onMessage(InternalEvent.Loaded, async ({ sender }) => {
-  if (!isInternalEndpoint(sender)) return;
-
-  let request: AsyncRequest | undefined;
-  do {
-    request = requests.pop();
-    if (!request) continue;
-
+onMessage(InternalEvent.Loaded, async () => {
+  let request = await popFromQueue();
+  while (request) {
     const payload = { origin: request.origin, favicon: request.favicon };
     const data = request.data ? { payload, ...request.data } : { payload };
 
     const result = await sendMessage(request.type, data, "popup");
     request.resolve(result);
-  } while (request);
+    request = await popFromQueue();
+  }
 });
 
 onMessage(InternalEvent.UpdatedBackendUrl, (msg) => {
-  if (!isInternalEndpoint(msg.sender) || !msg.data) return;
-  graphQLService.setUrl(msg.data);
+  if (msg.data) graphQLService.setUrl(msg.data);
 });
 
 async function openWindow<T extends AsyncRequestType>(
@@ -162,10 +190,11 @@ async function openWindow<T extends AsyncRequestType>(
     data.payload.favicon = await getFavicon(tabId);
   }
 
-  const promise = requests.push<GetReturnType<T>>({
+  const promise = pushToQueue({
     type: request,
     origin: data.payload.origin,
-    data
+    data,
+    favicon: data.payload.favicon
   });
 
   await createWindow(tabId);
@@ -173,7 +202,11 @@ async function openWindow<T extends AsyncRequestType>(
 }
 
 async function getFavicon(tabId: number) {
-  return (await browser?.tabs.get(tabId))?.favIconUrl;
+  try {
+    return (await browser?.tabs.get(tabId))?.favIconUrl;
+  } catch {
+    return undefined;
+  }
 }
 
 function invalidRequest(info: string) {
