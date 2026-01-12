@@ -90,8 +90,27 @@
     @apply border-border;
   }
 
+  html {
+    height: 100%;
+    overflow: hidden;
+    scroll-behavior: smooth;
+  }
+
   body {
-    @apply bg-background text-foreground h-full cursor-default overflow-hidden !font-sans leading-normal tracking-wide antialiased;
+    @apply bg-background text-foreground !font-sans leading-normal tracking-wide antialiased;
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    cursor: default;
+    -webkit-overflow-scrolling: touch;
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  #app, #root {
+    @apply flex flex-col w-full h-full overflow-hidden;
   }
 
   button:not(:disabled),
