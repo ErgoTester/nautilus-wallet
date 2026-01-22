@@ -57,7 +57,8 @@
     --accent: 215 27.9% 16.9%;
     --accent-foreground: 210 20% 98%;
 
-    --destructive: 357.7 100% 38%; /*0 62.8% 30.6%;*/
+    --destructive: 357.7 100% 38%;
+    /*0 62.8% 30.6%;*/
     --destructive-foreground: 210 20% 98%;
 
     --border: 215 27.9% 16.9%;
@@ -75,7 +76,8 @@
     --success-foreground: 210 40% 98%;
 
     --header: var(--foreground) / 0.05;
-    --chart-primary-color: var(--foreground); /* 221.2 83.2% 53.3%; */
+    --chart-primary-color: var(--foreground);
+    /* 221.2 83.2% 53.3%; */
   }
 
   .dark {
@@ -109,7 +111,8 @@
     padding-bottom: env(safe-area-inset-bottom);
   }
 
-  #app, #root {
+  #app,
+  #root {
     @apply flex flex-col w-full h-full overflow-hidden;
   }
 
