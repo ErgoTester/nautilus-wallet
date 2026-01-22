@@ -25,7 +25,7 @@ class DexyService {
         if (!response.ok) return { items: [] };
         const data = await response.json();
         return data.items ?? [];
-      } catch (err) {
+      } catch {
         return [];
       }
     });
