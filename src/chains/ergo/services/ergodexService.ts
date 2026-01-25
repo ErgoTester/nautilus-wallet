@@ -10,49 +10,48 @@ export type AssetPriceRate = {
   [tokenId: string]: { erg: number };
 };
 
-// https://api.spectrum.fi/v1/docs
-const BASE_URL = "https://api.spectrum.fi";
+const BASE_URL = "https://dex-api.sigmaspace.io";
 
-export type SpectrumPool = {
+export type ErgodexPool = {
   id: string;
   baseId: string;
   baseSymbol: string;
   quoteId: string;
   quoteSymbol: string;
   lastPrice: number;
-  baseVolume: SpectrumPoolVolume;
-  quoteVolume: SpectrumPoolVolume;
+  baseVolume: ErgodexPoolVolume;
+  quoteVolume: ErgodexPoolVolume;
 };
 
-export type SpectrumPoolVolume = {
+export type ErgodexPoolVolume = {
   value: number;
 };
 
-export type SpectrumPoolStat = {
+export type ErgodexPoolStat = {
   id: string;
-  lockedX: SpectrumLockedValue;
-  lockedY: SpectrumLockedValue;
+  lockedX: ErgodexLockedValue;
+  lockedY: ErgodexLockedValue;
   tvl: { value: number };
 };
 
-export type SpectrumLockedValue = {
+export type ErgodexLockedValue = {
   id: string;
   amount: number;
   ticker: string;
   decimals: number;
 };
 
-class SpectrumService {
+class ErgodexService {
   #liquidTokensIds?: string[];
 
-  async getPoolsStats(): Promise<SpectrumPoolStat[] | undefined> {
+  async getPoolsStats(): Promise<ErgodexPoolStat[] | undefined> {
     return safeFetch("v1/amm/pools/stats", { baseURL: BASE_URL });
   }
 
   async getTokenIdsByLiquidity(minUsdLiquidity: number): Promise<string[]> {
     if (this.#liquidTokensIds) return this.#liquidTokensIds;
 
-    const stats = await spectrumService.getPoolsStats();
+    const stats = await ergodexService.getPoolsStats();
     if (!stats) return [];
 
     this.#liquidTokensIds = stats
@@ -61,7 +60,7 @@ class SpectrumService {
     return this.#liquidTokensIds;
   }
 
-  async getActivePools(fromDays = 30): Promise<SpectrumPool[] | undefined> {
+  async getActivePools(fromDays = 30): Promise<ErgodexPool[] | undefined> {
     const fromDate = new Date();
     fromDate.setDate(fromDate.getDate() - fromDays);
 
@@ -76,8 +75,8 @@ class SpectrumService {
 
   async getRatesByLiquidity(minUsdLiquidity: number): Promise<Map<string, BigNumber> | undefined> {
     const [markets, liquidTokens] = await Promise.all([
-      spectrumService.getActivePools(),
-      spectrumService.getTokenIdsByLiquidity(minUsdLiquidity)
+      ergodexService.getActivePools(),
+      ergodexService.getTokenIdsByLiquidity(minUsdLiquidity)
     ]);
     if (!markets) return;
 
@@ -104,4 +103,4 @@ class SpectrumService {
   }
 }
 
-export const spectrumService = new SpectrumService();
+export const ergodexService = new ErgodexService();
