@@ -1,9 +1,9 @@
 import { ERG_TOKEN_ID } from "@/constants/ergo";
 import { coinGeckoService } from "./coinGeckoService";
-import { spectrumService } from "./spectrumService";
+import { ergodexService } from "./ergodexService";
 import { dexyService } from "./dexyService";
 
-const MIN_USD_LIQUIDITY = 1_000;
+const MIN_USD_LIQUIDITY = 500;
 
 export type AssetRate = { erg: number; fiat: number };
 
@@ -11,7 +11,7 @@ class AssetPricingService {
   async getRates(fiatCurrency: string): Promise<Map<string, AssetRate> | undefined> {
     const [ergFiatRate, tokenRates, dexyRates] = await Promise.all([
       coinGeckoService.getPrice(fiatCurrency),
-      spectrumService.getRatesByLiquidity(MIN_USD_LIQUIDITY),
+      ergodexService.getRatesByLiquidity(MIN_USD_LIQUIDITY),
       dexyService.getRates()
     ]);
 
