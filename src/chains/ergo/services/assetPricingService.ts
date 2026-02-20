@@ -26,7 +26,7 @@ class AssetPricingService {
       rates.set(key, { erg: value.toNumber(), fiat: value.times(ergFiatRate).toNumber(), lpRate: value.toNumber() });
       }
     }
-    
+
     return rates;
   }
 }
