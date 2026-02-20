@@ -28,9 +28,10 @@ class ErgodexService {
         const url = `${EXPLORER_URL}/boxes/unspent/byErgoTree/${tree.trim()}?limit=500&offset=0`;
         const response = await fetch(url);
         if (!response.ok) return [];
-        const data = await response.json();
 
+        const data = await response.json();
         const items: ExplorerBox[] = data.items ?? [];
+
         return items.filter((box) =>
           bn(box.value).isGreaterThan(minNanoErg)
         );
@@ -50,17 +51,18 @@ class ErgodexService {
     for (const pool of pools) {
       if (!pool.assets || pool.assets.length < 3) continue;
 
+      const ergReserveNano = bn(pool.value);
+
       // =============================
       // TOKEN PRICE (asset[2])
       // =============================
       const tokenAsset = pool.assets[2];
-      const ergReserve = bn(pool.value);
       const tokenAmount = bn(tokenAsset.amount);
       const decimals = tokenAsset.decimals ?? 0;
 
       if (!tokenAsset || tokenAmount.isZero()) continue;
 
-      const tokenPriceInErg = ergReserve
+      const tokenPriceInErg = ergReserveNano
         .multipliedBy(bn(10).pow(decimals))
         .div(tokenAmount.multipliedBy(bn(10).pow(9)));
 
@@ -73,15 +75,12 @@ class ErgodexService {
       if (!lpAsset) continue;
 
       const lpInBox = bn(lpAsset.amount);
-
-      // LP provided to liquidity providers
       const providedLp = INITIAL_LP_SUPPLY.minus(lpInBox);
       if (providedLp.isZero()) continue;
 
-      // AMM assumption: total pool value ≈ 2 × ERG reserve
-      const totalPoolValueErg = ergReserve.multipliedBy(2);
-
-      const lpPriceInErg = totalPoolValueErg.div(providedLp);
+      const lpPriceInErg = ergReserveNano
+        .multipliedBy(2)
+        .div(providedLp.multipliedBy(bn(10).pow(9)));
 
       map.set(lpAsset.tokenId, lpPriceInErg);
     }
