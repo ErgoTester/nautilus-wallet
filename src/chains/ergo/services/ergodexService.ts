@@ -17,7 +17,7 @@ export type ExplorerBox = {
 };
 
 class ErgodexService {
-  async getPools(minErgInPool = 500): Promise<ExplorerBox[]> {
+  async getPools(minErgInPool = 250): Promise<ExplorerBox[]> {
     const minNanoErg = bn(minErgInPool).multipliedBy(1e9);
 
     const requests = ERGODEX_TREES.map(async (tree) => {
