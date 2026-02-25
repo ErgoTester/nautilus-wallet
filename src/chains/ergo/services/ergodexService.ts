@@ -39,7 +39,7 @@ class ErgodexService {
     return results.flat();
   }
 
-  async getRates(minErgInPool = 500): Promise<Map<string, BigNumber>> {
+  async getRates(minErgInPool = 250): Promise<Map<string, BigNumber>> {
     const pools = await this.getPools(minErgInPool);
     const map = new Map<string, BigNumber>();
 
