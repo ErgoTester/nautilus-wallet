@@ -109,8 +109,9 @@
     padding-bottom: env(safe-area-inset-bottom);
   }
 
-  #app, #root {
-    @apply flex flex-col w-full h-full overflow-hidden;
+  #app,
+  #root {
+    @apply flex h-full w-full flex-col overflow-hidden;
   }
 
   button:not(:disabled),

@@ -17,13 +17,21 @@ class AssetPricingService {
 
     const rates = new Map<string, AssetRate>([[ERG_TOKEN_ID, { erg: 1, fiat: ergFiatRate }]]);
     if (tokenRates) {
-    for (const [key, value] of tokenRates) {
-      rates.set(key, { erg: value.toNumber(), fiat: value.times(ergFiatRate).toNumber(), lpRate: value.toNumber() });
+      for (const [key, value] of tokenRates) {
+        rates.set(key, {
+          erg: value.toNumber(),
+          fiat: value.times(ergFiatRate).toNumber(),
+          lpRate: value.toNumber()
+        });
       }
     }
     if (dexyRates) {
-    for (const [key, value] of dexyRates) {
-      rates.set(key, { erg: value.toNumber(), fiat: value.times(ergFiatRate).toNumber(), lpRate: value.toNumber() });
+      for (const [key, value] of dexyRates) {
+        rates.set(key, {
+          erg: value.toNumber(),
+          fiat: value.times(ergFiatRate).toNumber(),
+          lpRate: value.toNumber()
+        });
       }
     }
 
