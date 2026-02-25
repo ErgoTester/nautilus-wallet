@@ -29,9 +29,7 @@ class ErgodexService {
         const data = await response.json();
         const items: ExplorerBox[] = data.items ?? [];
 
-        return items.filter((box) =>
-          bn(box.value).isGreaterThan(minNanoErg)
-        );
+        return items.filter((box) => bn(box.value).isGreaterThan(minNanoErg));
       } catch {
         return [];
       }
@@ -74,7 +72,6 @@ class ErgodexService {
         .div(tokenAmount.multipliedBy(bn(10).pow(9)));
 
       map.set(tokenAsset.tokenId, tokenPriceInErg);
-
     }
 
     return map;
