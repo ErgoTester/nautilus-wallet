@@ -17,9 +17,7 @@ export type ExplorerBox = {
 };
 
 class ErgodexService {
-  async getPools(minErgInPool = 250): Promise<ExplorerBox[]> {
-    const minNanoErg = bn(minErgInPool).multipliedBy(1e9);
-
+  async getPools(): Promise<ExplorerBox[]> {
     const requests = ERGODEX_TREES.map(async (tree) => {
       try {
         const url = `${EXPLORER_URL}/boxes/unspent/byErgoTree/${tree.trim()}?limit=500&offset=0`;
@@ -29,7 +27,7 @@ class ErgodexService {
         const data = await response.json();
         const items: ExplorerBox[] = data.items ?? [];
 
-        return items.filter((box) => bn(box.value).isGreaterThan(minNanoErg));
+        return items;
       } catch {
         return [];
       }
@@ -40,10 +38,14 @@ class ErgodexService {
   }
 
   async getRates(minErgInPool = 250): Promise<Map<string, BigNumber>> {
-    const pools = await this.getPools(minErgInPool);
+    const pools = await this.getPools();
     const map = new Map<string, BigNumber>();
 
+    const minNanoErg = bn(minErgInPool).multipliedBy(1e9);
+
     for (const pool of pools) {
+      if (bn(pool.value).isLessThan(minNanoErg)) continue;
+
       if (!pool.assets || pool.assets.length < 3) continue;
 
       const ergReserveNano = bn(pool.value);
