@@ -25,7 +25,7 @@ class DexyService {
   async getPools() {
     const requests = DEXY_POOLS.map(async (config) => {
       try {
-        const url = `${EXPLORER_URL}/boxes/unspent/byErgoTree/${config.tree.trim()}`;
+        const url = `${EXPLORER_URL}/boxes/unspent/byErgoTree/${config.tree.trim()}?limit=500&offset=0`;
         const response = await fetch(url);
         if (!response.ok) return [];
 
