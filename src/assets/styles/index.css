@@ -97,7 +97,6 @@
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
     margin: 0;
-    padding-top: env(safe-area-inset-top);
     padding-bottom: env(safe-area-inset-bottom);
   }
 
