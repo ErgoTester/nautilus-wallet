@@ -90,8 +90,32 @@
     @apply border-border;
   }
 
+  html,
   body {
-    @apply bg-background text-foreground h-full cursor-default overflow-hidden !font-sans leading-normal tracking-wide antialiased;
+    min-height: 100%;
+    height: auto;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    margin: 0;
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  body.fullscreen {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+  }
+
+  #app,
+  #root {
+    @apply flex h-full w-full flex-col overflow-hidden;
+  }
+
+  body {
+    @apply bg-background text-foreground !font-sans leading-normal tracking-wide antialiased;
+    cursor: default;
   }
 
   button:not(:disabled),
