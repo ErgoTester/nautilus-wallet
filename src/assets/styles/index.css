@@ -90,28 +90,33 @@
     @apply border-border;
   }
 
-  html {
-    height: 100%;
-    overflow: hidden;
-    scroll-behavior: smooth;
+  html,
+  body {
+    min-height: 100%;
+    height: auto;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    margin: 0;
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
   }
 
-  body {
-    @apply bg-background text-foreground !font-sans leading-normal tracking-wide antialiased;
+  body.fullscreen {
     position: fixed;
     inset: 0;
     width: 100%;
     height: 100%;
     overflow: hidden;
-    cursor: default;
-    -webkit-overflow-scrolling: touch;
-    padding-top: env(safe-area-inset-top);
-    padding-bottom: env(safe-area-inset-bottom);
   }
 
   #app,
   #root {
     @apply flex h-full w-full flex-col overflow-hidden;
+  }
+
+  body {
+    @apply bg-background text-foreground !font-sans leading-normal tracking-wide antialiased;
+    cursor: default;
   }
 
   button:not(:disabled),
