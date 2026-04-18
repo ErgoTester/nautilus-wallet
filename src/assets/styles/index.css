@@ -57,7 +57,7 @@
     --accent: 215 27.9% 16.9%;
     --accent-foreground: 210 20% 98%;
 
-    --destructive: 357.7 100% 38%; /*0 62.8% 30.6%;*/
+    --destructive: 357.7 100% 38%;
     --destructive-foreground: 210 20% 98%;
 
     --border: 215 27.9% 16.9%;
@@ -75,7 +75,7 @@
     --success-foreground: 210 40% 98%;
 
     --header: var(--foreground) / 0.05;
-    --chart-primary-color: var(--foreground); /* 221.2 83.2% 53.3%; */
+    --chart-primary-color: var(--foreground);
   }
 
   .dark {
@@ -92,7 +92,8 @@
 
   html,
   body {
-    min-height: 100%;
+    min-height: 100vh;
+    min-height: 100dvh;
     height: auto;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
@@ -104,13 +105,33 @@
     position: fixed;
     inset: 0;
     width: 100%;
-    height: 100%;
+    height: 100vh;
     overflow: hidden;
+  }
+
+  body.popup {
+    height: auto;
+    min-height: 100vh;
+    min-height: 100dvh;
+    overflow-y: auto;
   }
 
   #app,
   #root {
-    @apply flex h-full w-full flex-col overflow-hidden;
+    @apply flex w-full flex-col;
+    min-height: 100vh;
+    min-height: 100dvh;
+  }
+
+  body.fullscreen #app,
+  body.fullscreen #root {
+    height: 100%;
+    overflow: hidden;
+  }
+
+  body.popup #app,
+  body.popup #root {
+    overflow-y: auto;
   }
 
   body {
@@ -121,6 +142,18 @@
   button:not(:disabled),
   [role="button"]:not(:disabled) {
     cursor: pointer;
+  }
+
+  input,
+  textarea {
+    scroll-margin-bottom: 140px;
+  }
+
+  .action-bar {
+    position: sticky;
+    bottom: 0;
+    background: hsl(var(--background));
+    padding-bottom: env(safe-area-inset-bottom);
   }
 }
 
