@@ -134,6 +134,22 @@
     overflow-y: auto;
   }
 
+  #app > *:not(:last-child),
+  #root > *:not(:last-child) {
+    flex: 1 1 auto;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  #app > *:last-child,
+  #root > *:last-child {
+    position: sticky;
+    bottom: 0;
+    z-index: 20;
+    background: hsl(var(--background));
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
   body {
     @apply bg-background text-foreground !font-sans leading-normal tracking-wide antialiased;
     cursor: default;
@@ -146,7 +162,7 @@
 
   input,
   textarea {
-    scroll-margin-bottom: 140px;
+    scroll-margin-bottom: 180px;
   }
 
   .action-bar {
