@@ -28,7 +28,7 @@ export const assetIconMap = new Map<string, string>([
   ["089990451bb430f05a85f4ef3bcb6ebf852b3d6ee68d86d78658b9ccef20074f", "quacks.svg"],
   ["2a51396e09ad9eca60b1bdafd365416beae155efce64fc3deb0d1b3580127b8f", "obsidian.png"],
   ["956bcab1ea3ed40c91bf845fe4f2dee727fe130a95f244a41a6ee7a25f14e23f", "gluon.png"],
-  ["d1d2ae2ac0456aa43550dd4fda45e4f866d523be9170d3a3e4cab43a83926334", "greasycex.svg"],
+  ["d1d2ae2ac0456aa43550dd4fda45e4f866d523be9170d3a3e4cab43a83926334", "GreasyCex.svg"],
   ["e023c5f382b6e96fbd878f6811aac73345489032157ad5affb84aefd4956c297", "rsada.svg"],
   ["8b08cdd5449a9592a9e79711d7d79249d7a03c535d17efaee83e216e80a44c4b", "rosen.svg"],
   ["1465c9b9de602bd75f8f38df83118e2c8b1d5b2f5518514dd1438149053652a8", "dark_erdoge.svg"],
@@ -61,5 +61,12 @@ export const assetIconMap = new Map<string, string>([
   ["a55b8735ed1a99e46c2c89f8994aacdf4b1109bdcf682f1e5b34479c6e392669", "USE.svg"],
   ["85763f3893ddd8f7f820473ed0dcc3c40aa8398ec6075a8990f250b9d270e9b3", "CLB_USE.svg"],
   ["ae399fcb751e8e247d0da8179a2bcca2aa5119fff9c85721ffab9cdc9a3cb2dd", "DORT.svg"],
-  ["00b42b41cb438c41d0139aa8432eb5eeb70d5a02d3df891f880d5fe08670c365", "Crux.png"]
+  ["00b42b41cb438c41d0139aa8432eb5eeb70d5a02d3df891f880d5fe08670c365", "Crux.png"],
+  ["9a2349affa9ab70cfbfd221fc889052279f241b65a2eb171190bef2f69ef9348", "rsDOG.svg"],
+  ["20116c9d694800f8e71ab8fbc03c19d46fdb3a0746e85263eaa5812576112fde", "rsMIM.svg"],
+  ["0019fd2bf9b619bc3c181c5f727139fdd2a4139371f48a5c31af0703953ddeaf", "rsGIZMO.svg"],
+  ["a50d95830f150f8ffb5da1a65e2313b1269807a855e30cd2f0b3fbaee0a47386", "rsIAG.svg"],
+  ["4ba9550720bc6520c8d58b1e8d7615627b775440f8d642415df1581eacf6d68a", "rsSNEK.svg"],
+  ["f0cac602d618081f46db086726d3c4da53006b646b50e382989054dcf3c93bd8", "FAKU.svg"],
+  ["46700be1c5b9287acb6c7664e72883c967574db4332a3bfec59cece33b5a3177", "CHEPUR.svg"]  
 ]);
