@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { computed, ref } from "vue";
-import { usePreferredDark } from "@vueuse/core";
 import {
   CheckIcon,
   ChevronsUpDownIcon,
@@ -8,12 +7,11 @@ import {
   EyeOffIcon,
   InfoIcon,
   LoaderCircleIcon,
-  Maximize2Icon,
-  Minimize2Icon,
   MoonIcon,
   PlusCircleIcon,
   SettingsIcon,
-  SunIcon
+  SunIcon,
+  SunMoonIcon
 } from "lucide-vue-next";
 import { useI18n } from "vue-i18n";
 import { useRouter } from "vue-router";
@@ -31,8 +29,6 @@ import {
 } from "@/components/ui/command";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { WalletItem } from "@/components/wallet";
-import { browser, isPopup } from "@/common/browser";
-import { EXT_ENTRY_ROOT } from "@/constants/extension";
 import { IDbWallet } from "@/types/database";
 
 const wallet = useWalletStore();
@@ -41,8 +37,6 @@ const router = useRouter();
 const { t } = useI18n();
 
 const current = computed(() => app.wallets.find((w) => w.id === wallet.id));
-
-const isPopupView = isPopup();
 
 const isOpen = ref(false);
 const searchTerm = ref("");
@@ -85,43 +79,17 @@ function toggleValuesVisibility() {
   app.settings.hideBalances = !app.settings.hideBalances;
 }
 
-const prefersDark = usePreferredDark();
-const isDark = computed(() =>
-  app.settings.colorMode === "auto" ? prefersDark.value : app.settings.colorMode === "dark"
-);
-
-function toggleColorMode() {
-  app.settings.colorMode = isDark.value ? "light" : "dark";
+function prefersDarkColors() {
+  return window.matchMedia("(prefers-color-scheme: dark)");
 }
 
-async function toggleViewMode() {
-  if (!browser) return;
-  const viewMode = app.settings.extension.viewMode;
-
-  if (import.meta.env.TARGET === "firefox") {
-    app.settings.extension.viewMode = viewMode === "popup" ? "sidebar" : "popup";
-    await browser.sidebarAction.toggle();
-
-    if (viewMode === "popup") window.close();
-    return;
-  }
-
-  if (isPopupView) {
-    const currentWindow = await browser.windows.getCurrent();
-    if (currentWindow?.id) {
-      app.settings.extension.viewMode = "sidebar";
-      chrome.sidePanel.open({ windowId: currentWindow.id });
-      chrome.sidePanel.setPanelBehavior({ openPanelOnActionClick: true });
-    } else {
-      const url = browser.runtime.getURL(`${EXT_ENTRY_ROOT}/popup/index.html`);
-      browser.tabs.create({ url, active: false });
-    }
+function toggleColorMode() {
+  const mode = app.settings.colorMode;
+  if (mode === "auto") {
+    app.settings.colorMode = prefersDarkColors() ? "light" : "dark";
   } else {
-    app.settings.extension.viewMode = "popup";
-    chrome.sidePanel.setPanelBehavior({ openPanelOnActionClick: false });
+    app.settings.colorMode = mode === "dark" ? "light" : "dark";
   }
-
-  window.close();
 }
 </script>
 <template>
@@ -181,12 +149,9 @@ async function toggleViewMode() {
             <EyeOffIcon v-else />
           </Button>
           <Button class="cursor-default" variant="ghost" size="icon" @click="toggleColorMode">
-            <SunIcon v-if="isDark" />
-            <MoonIcon v-else />
-          </Button>
-          <Button class="cursor-default" variant="ghost" size="icon" @click="toggleViewMode">
-            <Maximize2Icon v-if="isPopupView" />
-            <Minimize2Icon v-else />
+            <SunIcon v-if="app.settings.colorMode === 'dark'" />
+            <MoonIcon v-else-if="app.settings.colorMode === 'light'" />
+            <SunMoonIcon v-else />
           </Button>
         </div>
 
