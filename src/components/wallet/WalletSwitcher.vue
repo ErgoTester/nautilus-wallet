@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { computed, ref } from "vue";
-import { usePreferredDark } from "@vueuse/core";
 import {
   CheckIcon,
   ChevronsUpDownIcon,
@@ -11,7 +10,8 @@ import {
   MoonIcon,
   PlusCircleIcon,
   SettingsIcon,
-  SunIcon
+  SunIcon,
+  SunMoonIcon
 } from "lucide-vue-next";
 import { useI18n } from "vue-i18n";
 import { useRouter } from "vue-router";
@@ -79,15 +79,18 @@ function toggleValuesVisibility() {
   app.settings.hideBalances = !app.settings.hideBalances;
 }
 
-const prefersDark = usePreferredDark();
-const isDark = computed(() =>
-  app.settings.colorMode === "auto" ? prefersDark.value : app.settings.colorMode === "dark"
-);
-
-function toggleColorMode() {
-  app.settings.colorMode = isDark.value ? "light" : "dark";
+function prefersDarkColors() {
+  return window.matchMedia("(prefers-color-scheme: dark)");
 }
 
+function toggleColorMode() {
+  const mode = app.settings.colorMode;
+  if (mode === "auto") {
+    app.settings.colorMode = prefersDarkColors() ? "light" : "dark";
+  } else {
+    app.settings.colorMode = mode === "dark" ? "light" : "dark";
+  }
+}
 </script>
 <template>
   <Popover v-model:open="isOpen">
@@ -146,8 +149,9 @@ function toggleColorMode() {
             <EyeOffIcon v-else />
           </Button>
           <Button class="cursor-default" variant="ghost" size="icon" @click="toggleColorMode">
-            <SunIcon v-if="isDark" />
-            <MoonIcon v-else />
+            <SunIcon v-if="app.settings.colorMode === 'dark'" />
+            <MoonIcon v-else-if="app.settings.colorMode === 'light'" />
+            <SunMoonIcon v-else />
           </Button>
         </div>
 
