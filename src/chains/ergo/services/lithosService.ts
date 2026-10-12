@@ -39,8 +39,9 @@ class LithosService {
       }
 
       const data = await response.json();
-
-      return (data.items ?? []).map((box: ExplorerBox) => ({
+      const boxes = Array.isArray(data) ? data : data.items ?? [];
+      
+      return boxes.map((box: ExplorerBox) => ({
         ...box,
         pool: LITHOS_POOL,
       }));
