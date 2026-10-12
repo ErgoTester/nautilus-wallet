@@ -14,7 +14,7 @@ import {
   PlusCircleIcon,
   SettingsIcon,
   SunIcon
-} from "@lucide/vue";
+} from "lucide-vue-next";
 import { useI18n } from "vue-i18n";
 import { useRouter } from "vue-router";
 import { useAppStore } from "@/stores/appStore";

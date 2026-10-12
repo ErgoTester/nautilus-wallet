@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, ref, watch } from "vue";
 import BigNumber from "bignumber.js";
-import { SearchCheckIcon, SearchIcon } from "@lucide/vue";
+import { SearchCheckIcon, SearchIcon } from "lucide-vue-next";
 import { useI18n } from "vue-i18n";
 import { useAppStore } from "@/stores/appStore";
 import { useAssetsStore } from "@/stores/assetsStore";

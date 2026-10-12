@@ -9,6 +9,7 @@ import vue from "@vitejs/plugin-vue";
 import { visualizer } from "rollup-plugin-visualizer";
 import { defineConfig, PluginOption } from "vite";
 import { nodePolyfills } from "vite-plugin-node-polyfills";
+import topLevelAwait from "vite-plugin-top-level-await";
 import wasmLoader from "vite-plugin-wasm";
 import webExtension from "vite-plugin-web-extension";
 import svgLoader from "vite-svg-loader";
@@ -35,9 +36,10 @@ function defEnv(obj: Record<string, unknown>): Record<string, string> {
 
 const plugins = [
   vue(),
-  vueI18n({ include: r("src/i18n/locales/*.json"), dropMessageCompiler: true }),
+  vueI18n({ include: r("src/i18n/locales/*.json") }),
   tailwindcss(),
   svgLoader(),
+  topLevelAwait(),
   wasmLoader(),
   objectLogger(env),
   nodePolyfills({ include: ["buffer"] }), // required by @ledgerhq/* packages
@@ -47,17 +49,13 @@ const plugins = [
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
   resolve: {
-    alias: {
-      "@": fileURLToPath(new URL("./src", import.meta.url)),
-      clsx: "cn" // dedupe class-variance-authority's clsx import
-    }
+    alias: { "@": fileURLToPath(new URL("./src", import.meta.url)) }
   },
   define: defEnv(env),
   plugins: [
     ...(mode === "development" ? plugins : []),
     webExtension({
       manifest: () => buildManifest(env.NETWORK, env.TARGET, mode),
-      skipManifestValidation: true, // skip for now
       watchFilePaths: [r("src/manifest.ts")],
       additionalInputs: [
         `${EXT_ENTRY_ROOT}/content-scripts/injected.ts`,
@@ -85,6 +83,18 @@ export default defineConfig(({ mode }) => ({
     chunkSizeWarningLimit: 1024,
     emptyOutDir: true,
     outDir: r("dist")
+  },
+  optimizeDeps: {
+    include: [
+      "vue",
+      "vue-router",
+      "pinia",
+      "@fleet-sdk/babel-fees-plugin",
+      "ledger-ergo-js",
+      "ergo-lib-wasm-browser",
+      "vue-json-pretty",
+      "uqr"
+    ]
   },
   server: {
     port,

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { cn } from '@/common/utils'
-import { ChevronsUpDownIcon } from '@lucide/vue'
+import { ChevronsUpDownIcon } from 'lucide-vue-next'
 import { SelectIcon, SelectTrigger, type SelectTriggerProps, useForwardProps } from 'reka-ui'
 import { computed, type HTMLAttributes } from 'vue'
 
