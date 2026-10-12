@@ -41,7 +41,7 @@ class LithosService {
       if (!pool.assets?.length) continue;
 
       const ergReserveNano = bn(pool.value);
-      const tokenAsset = pool.assets[0];
+      const tokenAsset = pool.assets[1];
 
       if (!tokenAsset) continue;
 
