@@ -8,7 +8,7 @@ import {
   Loader2Icon,
   LockIcon,
   XIcon
-} from "@lucide/vue";
+} from "lucide-vue-next";
 import { useI18n } from "vue-i18n";
 import { useAppStore } from "@/stores/appStore";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";

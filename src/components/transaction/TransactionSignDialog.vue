@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { h, ref, watch } from "vue";
 import { EIP12UnsignedTransaction, SignedInput, SignedTransaction } from "@fleet-sdk/common";
-import { ExternalLinkIcon } from "@lucide/vue";
+import { ExternalLinkIcon } from "lucide-vue-next";
 import { useI18n } from "vue-i18n";
 import { useAppStore } from "@/stores/appStore";
 import {

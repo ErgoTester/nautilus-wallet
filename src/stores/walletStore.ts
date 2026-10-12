@@ -375,13 +375,15 @@ export const useWalletStore = defineStore("wallet", () => {
 
       assetsChunks.push(
         info.flatMap((address) =>
-          address.assets.map((asset): IDbAsset => ({
-            address: address.address,
-            tokenId: asset.tokenId,
-            confirmedAmount: asset.confirmedAmount,
-            unconfirmedAmount: asset.unconfirmedAmount,
-            walletId
-          }))
+          address.assets.map(
+            (asset): IDbAsset => ({
+              address: address.address,
+              tokenId: asset.tokenId,
+              confirmedAmount: asset.confirmedAmount,
+              unconfirmedAmount: asset.unconfirmedAmount,
+              walletId
+            })
+          )
         )
       );
 

@@ -3,7 +3,13 @@ import { computed, onMounted, ref, watch } from "vue";
 import { generateMnemonic } from "@fleet-sdk/wallet";
 import { useVuelidate } from "@vuelidate/core";
 import { helpers, minLength, required, sameAs } from "@vuelidate/validators";
-import { CheckIcon, FingerprintIcon, KeyRoundIcon, Loader2Icon, RotateCwIcon } from "@lucide/vue";
+import {
+  CheckIcon,
+  FingerprintIcon,
+  KeyRoundIcon,
+  Loader2Icon,
+  RotateCwIcon
+} from "lucide-vue-next";
 import { useI18n } from "vue-i18n";
 import { useRouter } from "vue-router";
 import { useAppStore } from "@/stores/appStore";

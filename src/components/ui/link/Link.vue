@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { HtmlHTMLAttributes, LinkHTMLAttributes } from "vue";
-import { ExternalLinkIcon } from "@lucide/vue";
+import { ExternalLinkIcon } from "lucide-vue-next";
 import { cn } from '@/common/utils'
 
 const props = withDefaults(

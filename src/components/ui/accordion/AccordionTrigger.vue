@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { cn } from '@/common/utils'
-import { ChevronDown } from '@lucide/vue'
+import { ChevronDown } from 'lucide-vue-next'
 import {
   AccordionHeader,
   AccordionTrigger,
