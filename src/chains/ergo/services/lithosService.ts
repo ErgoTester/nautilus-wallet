@@ -29,7 +29,6 @@ class LithosService {
       });
 
       if (!response.ok) {
-        console.error("Lithos pool request failed:", response.status, await response.text());
         return [];
       }
 
@@ -40,8 +39,7 @@ class LithosService {
         ...box,
         pool: LITHOS_POOL
       }));
-    } catch (error) {
-      console.error("Failed to fetch Lithos pools:", error);
+    } catch {
       return [];
     }
   }
