@@ -12,7 +12,7 @@ class AssetPricingService {
       coinGeckoService.getPrice(fiatCurrency),
       ergodexService.getRates(),
       dexyService.getRates(),
-      lithosService.getRates(),
+      lithosService.getRates()
     ]);
 
     if (!ergFiatRate && !tokenRates && !dexyRates && !lithosRates) return undefined;
@@ -24,7 +24,7 @@ class AssetPricingService {
         rates.set(key, {
           erg: value.toNumber(),
           fiat: value.times(ergFiatRate).toNumber(),
-          lpRate: value.toNumber(),
+          lpRate: value.toNumber()
         });
       }
     }
@@ -34,7 +34,7 @@ class AssetPricingService {
         rates.set(key, {
           erg: value.toNumber(),
           fiat: value.times(ergFiatRate).toNumber(),
-          lpRate: value.toNumber(),
+          lpRate: value.toNumber()
         });
       }
     }
@@ -43,7 +43,7 @@ class AssetPricingService {
       for (const [key, value] of lithosRates) {
         rates.set(key, {
           erg: value.toNumber(),
-          fiat: value.times(ergFiatRate).toNumber(),
+          fiat: value.times(ergFiatRate).toNumber()
         });
       }
     }
