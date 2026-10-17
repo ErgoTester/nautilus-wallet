@@ -40,7 +40,9 @@ const plugins = [
   svgLoader(),
   wasmLoader(),
   objectLogger(env),
-  nodePolyfills({ include: ["buffer"] }), // required by @ledgerhq/* packages
+  // `Buffer` is required by @ledgerhq/* packages. It's explicitly set as a global in `src/common/ledger.ts`
+  // instead of being injected everywhere, so the polyfill is only loaded along with the Ledger code
+  nodePolyfills({ include: ["buffer"], globals: { Buffer: false } }),
   INSPECT_BUNDLE ? visualizer({ open: true, filename: "dist/bundle-stats.html" }) : undefined
 ];
 
@@ -72,13 +74,11 @@ export default defineConfig(({ mode }) => ({
     rollupOptions: {
       output: {
         sanitizeFileName(name) {
-          // avoid "The argument 'path' must be a string, Uint8Array, or URL without null bytes. Received [...]\x00[...]" error
-          if (name.includes("\x00")) name = name.replace("\x00", "");
+          // a custom sanitizer replaces the default one, so mirror its invalid char handling
+          // eslint-disable-next-line no-control-regex
+          name = name.replace(/[\x00-\x1F"#$%&*+,:;<=>?[\]^`{|}\x7F]/g, "_");
           // chromium: filenames starting with "_" are reserved for use by the system.
-          if (name.startsWith("_")) name = name.replace("_", "");
-          // avoid invalid filenames such as FeeSelector.vue?vue&type=script&setup=true&lang.js
-          if (name.includes(".vue?")) name = name.slice(0, name.indexOf(".vue?"));
-          return name;
+          return name.replace(/^_+/, "");
         }
       }
     },
