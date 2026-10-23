@@ -80,7 +80,8 @@ export function buildManifest(
         {
           version_name: pkg.version,
           background: { service_worker: r("background/background.ts") },
-          side_panel: { default_path: r("popup/index.html") }
+          side_panel: { default_path: r("popup/index.html") },
+          key: "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEArmcR7alp723fffkjOFdecqQZ4RKCHPYJK498mH9+SAMgKqT9Uo2vC23c3G0nZEHdSkfsc8FqddfUnH0vizdqJa+K+TldC3YofcrNcfs8dAsl9whpwvHh2hDRehKsTkYYJWvDEIuYxvBrC9xpGFvFENV//j1Fl05/XujXM8c5uzSPeknB1MIJ0bZaZJksAzEAVNsZyL6MlZkm3JiZaRc7InV79+JGct9I8Dd9UxhJWU9Tc+FOiWup1tz4ZQd4S0JzgPVxNTujAYK7jVtZNawvC80KGEEVn1uSLJnsqx8VDpwCMU2X7Yi/1SbH7svj6NKiMQj5CWEUZFqAF/5+w5djEQIDAQAB"
         }
       : // firefox specific manifest fields
         {
