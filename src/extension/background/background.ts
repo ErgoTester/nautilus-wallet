@@ -285,7 +285,6 @@ async function enqueueWindow<T extends AsyncRequestType>(
   }
 }
 
-
 async function showWindow<T extends AsyncRequestType>(
   request: T,
   data: DataWithPayload,
@@ -303,7 +302,6 @@ async function showWindow<T extends AsyncRequestType>(
   });
 
   let window: Awaited<ReturnType<typeof createWindow>>;
-
   try {
     window = await createWindow(tabId);
   } catch (e) {
@@ -312,7 +310,6 @@ async function showWindow<T extends AsyncRequestType>(
   }
 
   const isTab = "url" in window;
-
   const onRemoved = (removedId: number) => {
     if (removedId !== window.id) return;
 
@@ -335,7 +332,6 @@ async function showWindow<T extends AsyncRequestType>(
 
   return promise;
 }
-
 
 async function getFavicon(tabId: number) {
   return (await browser?.tabs.get(tabId))?.favIconUrl;
