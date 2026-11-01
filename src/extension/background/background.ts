@@ -285,6 +285,7 @@ async function enqueueWindow<T extends AsyncRequestType>(
   }
 }
 
+
 async function showWindow<T extends AsyncRequestType>(
   request: T,
   data: DataWithPayload,
@@ -302,6 +303,7 @@ async function showWindow<T extends AsyncRequestType>(
   });
 
   let window: Awaited<ReturnType<typeof createWindow>>;
+
   try {
     window = await createWindow(tabId);
   } catch (e) {
@@ -309,18 +311,31 @@ async function showWindow<T extends AsyncRequestType>(
     throw e;
   }
 
-  const onRemoved = (windowId: number) => {
-    if (windowId !== window.id) return;
-    browser?.windows.onRemoved.removeListener(onRemoved);
+  const isTab = "url" in window;
 
-    // the window was closed before the request could be delivered to it
+  const onRemoved = (removedId: number) => {
+    if (removedId !== window.id) return;
+
+    if (isTab) {
+      browser?.tabs.onRemoved.removeListener(onRemoved);
+    } else {
+      browser?.windows.onRemoved.removeListener(onRemoved);
+    }
+
+    // The connector was closed before the request was delivered.
     requests.pop()?.reject(new Error("Connector window closed."));
     onClose();
   };
 
-  browser?.windows.onRemoved.addListener(onRemoved);
+  if (isTab) {
+    browser?.tabs.onRemoved.addListener(onRemoved);
+  } else {
+    browser?.windows.onRemoved.addListener(onRemoved);
+  }
+
   return promise;
 }
+
 
 async function getFavicon(tabId: number) {
   return (await browser?.tabs.get(tabId))?.favIconUrl;
