@@ -309,16 +309,27 @@ async function showWindow<T extends AsyncRequestType>(
     throw e;
   }
 
-  const onRemoved = (windowId: number) => {
-    if (windowId !== window.id) return;
-    browser?.windows.onRemoved.removeListener(onRemoved);
+  const isTab = "url" in window;
+  const onRemoved = (removedId: number) => {
+    if (removedId !== window.id) return;
 
-    // the window was closed before the request could be delivered to it
+    if (isTab) {
+      browser?.tabs.onRemoved.removeListener(onRemoved);
+    } else {
+      browser?.windows.onRemoved.removeListener(onRemoved);
+    }
+
+    // The connector was closed before the request was delivered.
     requests.pop()?.reject(new Error("Connector window closed."));
     onClose();
   };
 
-  browser?.windows.onRemoved.addListener(onRemoved);
+  if (isTab) {
+    browser?.tabs.onRemoved.addListener(onRemoved);
+  } else {
+    browser?.windows.onRemoved.addListener(onRemoved);
+  }
+
   return promise;
 }
 
