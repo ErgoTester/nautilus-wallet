@@ -16,9 +16,10 @@ class AssetPricingService {
     if (!ergFiatRate && !tokenRates) return undefined;
 
     const rates = new Map<string, AssetRate>([[ERG_TOKEN_ID, { erg: 1, fiat: ergFiatRate }]]);
-    if (!tokenRates) return rates;
+    if (tokenRates) {
     for (const [key, value] of tokenRates) {
-      rates.set(key, { erg: value.toNumber(), fiat: value.times(ergFiatRate).toNumber() });
+      rates.set(key, { erg: value.toNumber(), fiat: value.times(ergFiatRate).toNumber(), lpRate: value.toNumber() });
+      }
     }
 
     return rates;
