@@ -64,6 +64,22 @@ watch(
   { immediate: true }
 );
 
+// until the first load ends there are no amounts to keep showing, only the placeholder ERG row
+const firstLoadDone = ref(!wallet.loading);
+watch(
+  () => wallet.loading,
+  (loading) => {
+    if (!loading) firstLoadDone.value = true;
+  }
+);
+
+const hideAmounts = computed(
+  () =>
+    (wallet.syncing && !wallet.synced) ||
+    !assetsStore.pricesLoaded ||
+    (wallet.loading && (showLoader.value || !firstLoadDone.value))
+);
+
 const ergTotal = computed(() =>
   wallet.nonArtworkBalance.reduce(
     (acc, a) => acc.plus(a.balance.times(isErg(a.tokenId) ? 1 : rate(a.tokenId))),
@@ -119,7 +135,7 @@ function openAssetInfoDialog(tokenId: string) {
 <template>
   <ScrollArea type="scroll">
     <div class="flex flex-col gap-4 p-4">
-      <div class="flex flex-col items-center gap-1 pt-2 pb-2 text-center">
+      <div class="flex flex-col items-center gap-1 py-4 text-center">
         <div class="relative max-w-[calc(100%-4rem)]">
           <h2
             class="truncate text-3xl leading-9 tabular-nums"
@@ -128,7 +144,7 @@ function openAssetInfoDialog(tokenId: string) {
             <template v-if="app.settings.hideBalances">
               <HiddenAmount :length="6" :label="t('asset.balanceHidden')" />
             </template>
-            <template v-else-if="balancePending">
+            <template v-else-if="hideAmounts">
               <Skeleton
                 class="mt-1 inline-block h-7 w-32 align-top"
                 :class="{ invisible: !showLoader }"
@@ -138,7 +154,7 @@ function openAssetInfoDialog(tokenId: string) {
             <template v-else>{{ formattedTotal }}</template>
           </h2>
           <Button
-            v-if="app.settings.hideBalances || !balancePending"
+            v-if="app.settings.hideBalances || !hideAmounts"
             id="toggle-balances"
             variant="ghost"
             size="icon-sm"
@@ -156,7 +172,7 @@ function openAssetInfoDialog(tokenId: string) {
         </div>
         <p class="text-muted-foreground text-xs">
           {{
-            hasFiatRate || balancePending || app.settings.hideBalances
+            hasFiatRate || hideAmounts || app.settings.hideBalances
               ? t("asset.totalBalance")
               : t("asset.totalBalanceNoRate", {
                   currency: app.settings.conversionCurrency.toUpperCase()
@@ -212,7 +228,7 @@ function openAssetInfoDialog(tokenId: string) {
                 variant="ghost"
                 :class="
                   cn(
-                    'h-auto gap-3 p-3 text-left [&_svg]:size-9',
+                    'h-auto gap-3 px-3 py-2.5 text-left [&_svg]:size-9',
                     isErg(asset.tokenId) && 'cursor-default'
                   )
                 "
@@ -235,7 +251,7 @@ function openAssetInfoDialog(tokenId: string) {
                   <template v-if="app.settings.hideBalances">
                     <HiddenAmount />
                   </template>
-                  <template v-else-if="balancePending">
+                  <template v-else-if="hideAmounts">
                     <Skeleton class="my-0.5 h-4 w-16" :class="{ invisible: !showLoader }" />
                     <span class="sr-only">{{ t("asset.loadingBalance") }}</span>
                   </template>
