@@ -28,7 +28,7 @@ export const assetIconMap = new Map<string, string>([
   ["089990451bb430f05a85f4ef3bcb6ebf852b3d6ee68d86d78658b9ccef20074f", "quacks.svg"],
   ["2a51396e09ad9eca60b1bdafd365416beae155efce64fc3deb0d1b3580127b8f", "obsidian.png"],
   ["956bcab1ea3ed40c91bf845fe4f2dee727fe130a95f244a41a6ee7a25f14e23f", "gluon.png"],
-  ["d1d2ae2ac0456aa43550dd4fda45e4f866d523be9170d3a3e4cab43a83926334", "greasycex.svg"],
+  ["d1d2ae2ac0456aa43550dd4fda45e4f866d523be9170d3a3e4cab43a83926334", "GreasyCex.svg"],
   ["e023c5f382b6e96fbd878f6811aac73345489032157ad5affb84aefd4956c297", "rsada.svg"],
   ["8b08cdd5449a9592a9e79711d7d79249d7a03c535d17efaee83e216e80a44c4b", "rosen.svg"],
   ["1465c9b9de602bd75f8f38df83118e2c8b1d5b2f5518514dd1438149053652a8", "dark_erdoge.svg"],
@@ -64,5 +64,8 @@ export const assetIconMap = new Map<string, string>([
   ["00b42b41cb438c41d0139aa8432eb5eeb70d5a02d3df891f880d5fe08670c365", "Crux.png"],
   ["c7bc7295d9e522e2731bf73aaec4e212e96f69a31b2e1d7ff4758762297a9f80", "hof.png"],
   ["c1980d829988229516430a47a5eca376060b6ce859616db0936e78ab25cb6de7", "lit.png"],
-  ["edaa0362f492cbb7c284a76d1bab12ff3468061e00b73db4a3f2cebc5aec77b3", "hns.svg"]
+  ["edaa0362f492cbb7c284a76d1bab12ff3468061e00b73db4a3f2cebc5aec77b3", "hns.svg"],
+  ["581d7df25808881b2b8b9b4e03e2f637c46a94f74a69a5da36434125bacb4e08", "rsFIRO.svg"],
+  ["f0cac602d618081f46db086726d3c4da53006b646b50e382989054dcf3c93bd8", "FAKU.svg"],
+  ["46700be1c5b9287acb6c7664e72883c967574db4332a3bfec59cece33b5a3177", "CHEPUR.png"]
 ]);
